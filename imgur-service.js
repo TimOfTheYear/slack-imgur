@@ -41,8 +41,20 @@ var server = http.createServer(function (req, res) {
                         console.log("Response Data: " + imgurBody);
                         var results = JSON.parse(imgurBody);
                         if(results.data.length > 0) {
+                            var postRequest = https.request({
+                                method: "POST",
+                                hostname: "hooks.slack.com",
+                                path: "/services/T08NCMCPQ/B093XDX1R/roOvnj908JgC8xbQbt216k1v"
+                            }, function(postResponse) {
+                                postResponse.on('error', function (err) {
+                                    console.log(err);
+                                });
+                            });
+                            postRequest.write(JSON.stringify({ text: "<" +
+                                results.data[0].link + ">"}));
+                            postRequest.end();
+
                             res.writeHead(200);
-                            res.write(results.data[0].link);
                             res.end();
                         }
                     })
